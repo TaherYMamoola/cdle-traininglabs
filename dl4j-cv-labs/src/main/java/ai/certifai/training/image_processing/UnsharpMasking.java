@@ -28,12 +28,37 @@ package ai.certifai.training.image_processing;
 *
 * */
 
+import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_core.Size;
+import org.nd4j.common.io.ClassPathResource;
+
+import java.io.IOException;
+
+import static org.bytedeco.opencv.global.opencv_core.add;
+import static org.bytedeco.opencv.global.opencv_core.subtract;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
+import static org.bytedeco.opencv.global.opencv_imgproc.GaussianBlur;
+
 public class UnsharpMasking {
-    public static void main(String[] args){
-        /*
-         *
-         * ENTER YOUR CODE HERE
-         *
-         * */
+    public static void main(String[] args) throws IOException {
+
+        Mat src = imread(new ClassPathResource("image_processing/lena.png").getFile().getAbsolutePath());
+
+        Display.display(src,"Original Image");
+
+        Mat blur = new Mat();
+
+        GaussianBlur(src,blur, new Size(3,3),10);
+
+        Mat details = new Mat();
+        subtract(src,blur,details);
+
+        Mat output = new Mat();
+        add(src,details,output);
+
+        Display.display(details,"Details");
+        Display.display(output,"Result");
+
+
     }
 }
