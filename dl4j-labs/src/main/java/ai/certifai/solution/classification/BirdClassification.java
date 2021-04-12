@@ -129,8 +129,8 @@ public class BirdClassification {
         System.out.println(Arrays.toString(testData.getFeatures().shape()));
 
 //========================================================================
-        //  Step 4 : DataNormalization
-//========================================================================
+        //  Step 4 : DataNormalizat
+        // ========================================================================
 
         //Data normalization
         DataNormalization normalizer = new NormalizerMinMaxScaler();
