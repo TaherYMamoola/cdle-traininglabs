@@ -50,7 +50,7 @@ import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
  */
 
 public class Quantization {
-    private static int bit = 2;
+    private static int bit = 256;
 
     public static void main(String[] args) throws IOException {
         // Load Image

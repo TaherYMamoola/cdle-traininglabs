@@ -17,11 +17,13 @@
 package ai.certifai.training.image_processing;
 
 import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_core.Size;
 import org.nd4j.common.io.ClassPathResource;
 
 import java.io.IOException;
 
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
+import static org.bytedeco.opencv.global.opencv_imgproc.*;
 
 /*
  *
@@ -59,7 +61,26 @@ public class LoadImages {
         System.out.println("Array Width : "+source.arrayWidth());
         System.out.println("# Channels : "+source.arrayChannels());
 
+        // Image Resizing
+        Mat downsize = new Mat();
+        Mat upsize_Linear = new Mat();
+        Mat upsize_BiLinear = new Mat();
+        Mat upsize_Cubic = new Mat();
+        Mat upsized_Nearest = new Mat();
 
+
+        resize(source,downsize,new Size(300,300));
+        resize(downsize,upsize_Linear, new Size(1200,1478),0,0,INTER_LINEAR); // V, and V1 is the scale factor to upsize in  horizontal and vertical, 0 means do it with size
+        resize(downsize,upsize_BiLinear,new Size(1200,1478),0,0,INTER_LINEAR_EXACT);
+        resize(downsize,upsize_Cubic,new Size(1200,1478),0,0,INTER_CUBIC);
+        resize(downsize,upsized_Nearest,new Size(1200,1478),0,0,INTER_NEAREST);
+
+
+        Display.display(downsize,"Downsized");
+        Display.display(upsize_Linear,"Linear_Upsized");
+        Display.display(upsize_BiLinear,"Linear_Exact Upsized");
+        Display.display(upsize_Cubic,"Cubic Upsized");
+        Display.display(upsized_Nearest,"Nearest Upsized");
 
     }
 }
