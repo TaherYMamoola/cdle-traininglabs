@@ -75,14 +75,14 @@ public class MnistClassifier extends Application {
     private static final int canvasWidth = 150;
     private static final int canvasHeight = 150;
 
-    private static final int height = 28;
-    private static final int width = 28;
+    private static final int height = 28; //image height
+    private static final int width = 28;// image width
     private static final int channels = 1; // single channel for grayscale images
     private static final int outputNum = 10; // 10 digits classification
-    private static final int batchSize = 54;
+    private static final int batchSize = 54;// mini batch propagation with batch size 54
     private static final int nEpochs = 1;
     private static final double learningRate = 0.001;
-    private static MultiLayerNetwork model = null;
+    private static MultiLayerNetwork model = null; // model init
 
     private static final int seed = 1234;
 
@@ -92,7 +92,7 @@ public class MnistClassifier extends Application {
     Create an iterator using the batch size for one iteration
     */
         log.info("Data load and vectorization...");
-        DataSetIterator mnistTrain = new MnistDataSetIterator(batchSize,true, seed);
+        DataSetIterator mnistTrain = new MnistDataSetIterator(batchSize,true, seed);// data iterator
         DataSetIterator mnistTest = new MnistDataSetIterator(batchSize,false, seed);
 
 
@@ -103,17 +103,17 @@ public class MnistClassifier extends Application {
         log.info("Network configuration and training...");
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                .updater(new Nesterovs(learningRate, Nesterovs.DEFAULT_NESTEROV_MOMENTUM))
-                .weightInit(WeightInit.XAVIER)
+                .seed(seed)// randomization fixed to #seed
+                .updater(new Nesterovs(learningRate, Nesterovs.DEFAULT_NESTEROV_MOMENTUM))// updater/optimizer, to help in weights update
+                .weightInit(WeightInit.XAVIER)// randomized weights generator
                 .list()
-                .layer(0, new ConvolutionLayer.Builder(5, 5)
-                        .nIn(channels)
-                        .stride(1, 1)
-                        .nOut(20)
-                        .activation(Activation.IDENTITY)
+                .layer(0, new ConvolutionLayer.Builder(5, 5)// convolutional layer
+                        .nIn(channels)// start with the depth of input image
+                        .stride(1, 1)// movemnet of feature map
+                        .nOut(20)// # nodes in this layer
+                        .activation(Activation.IDENTITY)// Simple Activation function, used in regression problem as pushes the number directly
                         .build())
-                .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX)
+                .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX)//pooling layer, Max Pooling
                         .kernelSize(2, 2)
                         .stride(2, 2)
                         .build())

@@ -16,7 +16,12 @@
 
 package ai.certifai.training.image_processing;
 
+import org.bytedeco.opencv.opencv_core.Mat;
+import org.nd4j.common.io.ClassPathResource;
+
 import java.io.IOException;
+
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
 
 /*
  *
@@ -47,11 +52,13 @@ import java.io.IOException;
 public class LoadImages {
     public static void main(String[] args) throws IOException {
 
-        /*
-        *
-        * ENTER YOUR CODE HERE
-        *
-        * */
+        String img = new ClassPathResource("image_processing/opencv.png").getFile().getAbsolutePath();
+        Mat source = imread(img);// Mat object is a simple matrix format array
+        Display.display(source,"Img");
+        System.out.println("Array Height : "+source.arrayHeight());
+        System.out.println("Array Width : "+source.arrayWidth());
+        System.out.println("# Channels : "+source.arrayChannels());
+
 
 
     }
