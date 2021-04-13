@@ -10,6 +10,7 @@ import org.datavec.api.writable.Writable;
 import org.datavec.local.transforms.LocalTransformExecutor;
 import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
@@ -45,7 +46,8 @@ public class WineClassification {
     static int numberInput = 11;
     static int numberClasses = 6;
     static double learning_rate = 0.001;
-    static int epochs = 100;
+    static int epochs = 200;
+//    static int batch_size = 40;
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -107,8 +109,9 @@ public class WineClassification {
         model.setListeners(new StatsListener(storage, 10));
 
         Evaluation eval;
-        model.fit(trainDataSet);
-        for(int i=0;i<=epochs;i++) {
+
+        for(int i=0;i<epochs;i++) {
+            model.fit(trainDataSet);
             eval = model.evaluate(new ViewIterator(testDataSet, transformed_data.size()));
             System.out.println("Epoch " + i + ", Accuracy : "+eval.accuracy());
         }
@@ -133,24 +136,29 @@ public class WineClassification {
                 .seed(seed)
                 .weightInit(WeightInit.XAVIER)
                 .updater(new Adam(learning_rate))
+                .l2(0.001)
                 .list()
                 .layer(0,new DenseLayer.Builder()
                         .nIn(numberInput)
-                        .nOut(100)
+                        .nOut(450)
                         .activation(Activation.RELU)
                         .build())
                 .layer(1,new DenseLayer.Builder()
-                        .nOut(50)
+                        .nOut(300)
                         .activation(Activation.RELU)
                         .build())
                 .layer(2,new DenseLayer.Builder()
-                        .nOut(10)
+                        .nOut(150)
                         .activation(Activation.RELU)
                         .build())
-                .layer(3,new OutputLayer.Builder()
+                .layer(3,new DenseLayer.Builder()
+                        .nOut(50)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(4,new OutputLayer.Builder()
                         .nOut(numberClasses)
                         .activation(Activation.SOFTMAX)
-                        .lossFunction(LossFunctions.LossFunction.POISSON)
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
                 .build();
         return config;
