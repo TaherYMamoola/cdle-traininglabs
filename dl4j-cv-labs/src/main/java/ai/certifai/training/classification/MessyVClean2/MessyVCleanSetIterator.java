@@ -1,6 +1,5 @@
-package ai.certifai.training.classification.MessyVClean;
+package ai.certifai.training.classification.MessyVClean2;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.datavec.api.io.filters.BalancedPathFilter;
 import org.datavec.api.io.filters.PathFilter;
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
@@ -19,7 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class MessyVCleanIterator {
+public class MessyVCleanSetIterator {
+
     private static String [] allowedExt = BaseImageLoader.ALLOWED_FORMATS;
     private static InputSplit trainData, testData;
     private static PathLabelGenerator lablemaker = new ParentPathLabelGenerator();
@@ -33,12 +33,10 @@ public class MessyVCleanIterator {
     private static int nClasses;
     private static double splitRatio = 0.8;
 
-
-
     public void setup(File TrainInput, int Height, int Width, int numChannels, int batch_size, int nClass){
 
         FileSplit fileSplits = new FileSplit(TrainInput,allowedExt);
-        InputSplit [] allData = fileSplits.sample(pathFilter,splitRatio,1-splitRatio);
+        InputSplit[] allData = fileSplits.sample(pathFilter,splitRatio,1-splitRatio);
         trainData = allData[0];
         testData = allData[1];
         height = Height;
@@ -78,7 +76,4 @@ public class MessyVCleanIterator {
         return iter;
 
     }
-
 }
-
-
