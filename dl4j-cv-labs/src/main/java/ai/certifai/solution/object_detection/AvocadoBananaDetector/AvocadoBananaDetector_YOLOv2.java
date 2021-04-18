@@ -76,16 +76,16 @@ import static org.bytedeco.opencv.helper.opencv_core.RGB;
 public class AvocadoBananaDetector_YOLOv2 {
     private static final Logger log = LoggerFactory.getLogger(AvocadoBananaDetector_YOLOv2.class);
     private static int seed = 123;
-    private static double detectionThreshold = 0.5;
-    private static int nBoxes = 5;
-    private static double lambdaNoObj = 0.5;
-    private static double lambdaCoord = 5.0;
-    private static double[][] priorBoxes = {{1, 3}, {2.5, 6}, {3, 4}, {3.5, 8}, {4, 9}};
+    private static double detectionThreshold = 0.5; // Probability Threshold
+    private static int nBoxes = 5; // # bbox per grid in YOLO
+    private static double lambdaNoObj = 0.5;// Used in Loss Calc. Total Loss = Bounding Box Difference + Prediction Score of Bounding Box + Prediction Score of CLass
+    private static double lambdaCoord = 5.0;// Used in Loss Calc.
+    private static double[][] priorBoxes = {{1, 3}, {2.5, 6}, {3, 4}, {3.5, 8}, {4, 9}}; // Anchor Boxes ; Kinds of shape our model is look out for ; 5 diff ~ to objects in the grid
 
     private static int batchSize = 2;
     private static int nEpochs = 40;
     private static double learningRate = 1e-4;
-    private static int nClasses = 2;
+    private static int nClasses = 2; // Avocado & Banana
     private static List<String> labels;
 
     private static File modelFilename = new File(System.getProperty("user.dir"), "generated-models/AvocadoBananaDetector_yolov2.zip");
@@ -93,8 +93,8 @@ public class AvocadoBananaDetector_YOLOv2 {
     private static Frame frame = null;
     private static final Scalar GREEN = RGB(0, 255.0, 0);
     private static final Scalar YELLOW = RGB(255, 255, 0);
-    private static Scalar[] colormap = {GREEN, YELLOW};
-    private static String labeltext = null;
+    private static Scalar[] colormap = {GREEN, YELLOW}; // bbox color as per prediction output ; differentiate classes based on the pred
+    private static String labeltext = null; // label of pred
 
     public static void main(String[] args) throws Exception {
 
@@ -130,9 +130,9 @@ public class AvocadoBananaDetector_YOLOv2 {
 
             //     STEP 2.4: Training and Save model.
             log.info("Train model...");
-            UIServer server = UIServer.getInstance();
+//            UIServer server = UIServer.getInstance();
             StatsStorage storage = new InMemoryStatsStorage();
-            server.attach(storage);
+//            server.attach(storage);
             model.setListeners(new ScoreIterationListener(1), new StatsListener(storage));
 
             for (int i = 1; i < nEpochs + 1; i++) {
@@ -160,9 +160,9 @@ public class AvocadoBananaDetector_YOLOv2 {
                 .addLayer("conv2d_23",
                         new ConvolutionLayer.Builder(1, 1)
                                 .nIn(1024)
-                                .nOut(nBoxes * (5 + nClasses))
+                                .nOut(nBoxes * (5 + nClasses)) // (S,S,B*5+nClass) from Slides
                                 .stride(1, 1)
-                                .convolutionMode(ConvolutionMode.Same)
+                                .convolutionMode(ConvolutionMode.Same)// SAME = I/p n O/p same size ; truncate;default
                                 .weightInit(WeightInit.XAVIER)
                                 .activation(Activation.IDENTITY)
                                 .build(),
@@ -171,10 +171,10 @@ public class AvocadoBananaDetector_YOLOv2 {
                         new Yolo2OutputLayer.Builder()
                                 .lambdaNoObj(lambdaNoObj)
                                 .lambdaCoord(lambdaCoord)
-                                .boundingBoxPriors(priors.castTo(DataType.FLOAT))
+                                .boundingBoxPriors(priors.castTo(DataType.FLOAT))// to float to be used in training
                                 .build(),
                         "conv2d_23")
-                .setOutputs("outputs")
+                .setOutputs("outputs") // Since removed the 2 last layers need to set the output layer
                 .build();
     }
 

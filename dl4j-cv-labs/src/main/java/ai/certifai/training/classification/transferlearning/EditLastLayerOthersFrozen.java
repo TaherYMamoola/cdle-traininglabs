@@ -74,7 +74,6 @@ public class EditLastLayerOthersFrozen {
         );
 
         ImageTransform transform = new PipelineImageTransform(pipeline,shuffle);
-
         /*
         Initialize dataset and create training and testing dataset iterator
         */
@@ -115,6 +114,7 @@ public class EditLastLayerOthersFrozen {
         Start a dashboard to visualize network training
         Setup listener to capture useful information during training.
         */
+
         UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();
         uiServer.attach(statsStorage);
