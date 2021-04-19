@@ -1,5 +1,15 @@
 package ai.certifai.training.classification.IrdologyClassification;
 
+import ai.certifai.solution.object_detection.AvocadoBananaDetector.FruitDataSetIterator;
+import org.bytedeco.javacv.CanvasFrame;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_core.Point;
+import org.bytedeco.opencv.opencv_core.Scalar;
+import org.bytedeco.opencv.opencv_core.Size;
+import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.transform.*;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -8,6 +18,9 @@ import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.nn.layers.objdetect.DetectedObject;
+import org.deeplearning4j.nn.layers.objdetect.YoloUtils;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
@@ -15,14 +28,21 @@ import org.nd4j.common.io.ClassPathResource;
 import org.nd4j.common.primitives.Pair;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.bytedeco.opencv.global.opencv_core.flip;
+import static org.bytedeco.opencv.global.opencv_imgproc.*;
+import static org.bytedeco.opencv.helper.opencv_core.RGB;
 
 public class irdologyClassifier {
 
@@ -35,6 +55,12 @@ public class irdologyClassifier {
     private static int epoch = 10;
     private static double learningRate = 0.001;
     private static double l2 = 0.001;
+    private static Frame frame = null;
+    private static final Scalar GREEN = RGB(0, 255.0, 0);
+    private static final Scalar YELLOW = RGB(255, 255, 0);
+    private static Scalar[] colormap = {GREEN, YELLOW}; // bbox color as per prediction output ; differentiate classes based on the pred
+    private static String labeltext = null;
+    private static ComputationGraph model;
 
     public static void main(String[] args) throws IOException {
 
@@ -117,5 +143,7 @@ public class irdologyClassifier {
 //
 //        ModelSerializer.writeModel(model,location,false);
 
+
     }
+
 }
