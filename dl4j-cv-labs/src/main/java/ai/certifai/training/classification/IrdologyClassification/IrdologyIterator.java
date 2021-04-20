@@ -61,6 +61,18 @@ public class IrdologyIterator {
 
     }
 
+    public static RecordReaderDataSetIterator gettest() throws IOException {
+        return prediction();
+    }
+    private static RecordReaderDataSetIterator prediction() throws IOException {
+        ImageRecordReader rr = new ImageRecordReader(height,width,nChannels,labelmaker);
+        rr.initialize(testData);
+        RecordReaderDataSetIterator RRiter = new RecordReaderDataSetIterator(rr,batch_size,1,nClasses);
+        DataNormalization scaler = new ImagePreProcessingScaler();
+        RRiter.setPreProcessor(scaler);
+        return RRiter;
+    }
+
     private DataSetIterator makeIterator (boolean train) throws IOException {
         ImageRecordReader rr = new ImageRecordReader(height,width,nChannels,labelmaker);
 

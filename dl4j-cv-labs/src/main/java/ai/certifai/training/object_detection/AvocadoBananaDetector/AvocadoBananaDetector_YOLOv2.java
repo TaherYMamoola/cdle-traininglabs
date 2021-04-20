@@ -48,6 +48,7 @@ import org.deeplearning4j.ui.model.stats.StatsListener;
 import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.deeplearning4j.zoo.model.YOLO2;
+import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -145,6 +146,11 @@ public class AvocadoBananaDetector_YOLOv2 {
             ModelSerializer.writeModel(model, modelFilename, true);
             System.out.println("Model saved.");
         }
+
+        Evaluation evalTrain = model.evaluate(trainIter);
+        Evaluation evalTest = model.evaluate(testIter);
+        System.out.println("Train Eval : "+evalTrain.stats());
+        System.out.println("Test Eval : "+evalTest.stats());
         //     STEP 3: Evaluate the model's accuracy by using the test iterator.
         OfflineValidationWithTestDataset(testIter);
         //     STEP 4: Inference the model and process the webcam stream and make predictions.

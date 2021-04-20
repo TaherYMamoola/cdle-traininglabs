@@ -1,7 +1,4 @@
-package ai.certifai.training.classification.IrdologyClassification;
-import lombok.SneakyThrows;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
+package ai.certifai.training.classification.Irdology;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -14,11 +11,10 @@ public class myFrame extends JFrame implements ActionListener {
 
     JButton btn_upload;
     JLabel label;
-    JLabel ClassOutput;
-    String getselectedImage;
+
 
     public static void main(String[] args) {
-        new myFrame();
+        new ai.certifai.training.classification.IrdologyClassification.myFrame();
     }
     public myFrame() {
 
@@ -30,19 +26,8 @@ public class myFrame extends JFrame implements ActionListener {
         label.setBounds(0, 0, icon2.getIconWidth(), icon2.getIconHeight());
         label.setVisible(false);
 
-        ClassOutput = new JLabel();
-        ClassOutput.setBounds((icon2.getIconWidth()/2)-200, icon2.getIconHeight()+10, 500, 30);
-        ClassOutput.setVisible(true);
-        ClassOutput.setHorizontalTextPosition(JButton.CENTER);
-        ClassOutput.setVerticalTextPosition(JButton.CENTER);
-        ClassOutput.setFont(new Font("Comic Sans",Font.PLAIN,25));
-        ClassOutput.setForeground(Color.RED);
-        ClassOutput.setBackground(new Color(0x00008B));
-
-
-
         btn_upload = new JButton();
-        btn_upload.setBounds((icon2.getIconWidth()/2)-100, icon2.getIconHeight()+100, 100, 75);
+        btn_upload.setBounds((icon2.getIconWidth()/2)-100, icon2.getIconHeight()+10, 100, 75);
         btn_upload.addActionListener(this);
         btn_upload.setText("UPLOAD");
         btn_upload.setFocusable(false);
@@ -53,19 +38,17 @@ public class myFrame extends JFrame implements ActionListener {
         btn_upload.setBackground(Color.BLACK);
         btn_upload.setBorder(BorderFactory.createEtchedBorder());
 
-        this.setTitle("Cholesterol Detector");
+        this.setTitle("Tutorial");
         this.setVisible(true);
-        this.setSize(icon2.getIconWidth(), icon2.getIconHeight()+350);
+        this.setSize(icon2.getIconWidth(), icon2.getIconHeight()+150);
         this.setLayout(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(btn_upload);
         this.add(label);
-        this.add(ClassOutput);
 
     }
 
 
-    @SneakyThrows
     @Override
     public void actionPerformed(ActionEvent e) {
         JFileChooser fileChooser = new JFileChooser();
@@ -76,7 +59,7 @@ public class myFrame extends JFrame implements ActionListener {
         if (selected == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             //Get Path of the selected image.
-             getselectedImage = file.getAbsolutePath();
+            String getselectedImage = file.getAbsolutePath();
             //Display image path on Message Dialog
             JOptionPane.showMessageDialog(null, getselectedImage);
             ImageIcon imIco = new ImageIcon(getselectedImage);
@@ -84,23 +67,12 @@ public class myFrame extends JFrame implements ActionListener {
             Image imFit = imIco.getImage();
             Image imgFit = imFit.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
             label.setIcon(new ImageIcon(imgFit));
+
         }
+        CholestrolRingDetector_YOLOv2 dect = new CholestrolRingDetector_YOLOv2();
+
         label.setVisible(true);
-        ClassOutput.setVisible(true);
-        irdologyClassifier classifier = new irdologyClassifier();
-        INDArray output = classifier.irdologyClassifier(getselectedImage);
-        INDArray maxOut = Nd4j.argMax(output, 1);
-        if (maxOut.getInt(0) == 1){
-            ClassOutput.setText("Normal Condition Eye");
-        }else{
-            ClassOutput.setText("Cholesterol Condition Eye");
-        }
-//        String oStr = maxOut.toString(100,false,0);
-
-
-
+//        btn_upload.setEnabled(false);
 
     }
 }
-
-
