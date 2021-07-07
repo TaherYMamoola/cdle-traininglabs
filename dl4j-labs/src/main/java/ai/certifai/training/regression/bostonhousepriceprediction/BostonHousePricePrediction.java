@@ -118,6 +118,7 @@ public class BostonHousePricePrediction {
 
         //  adding the original data to a list for later transform purpose
         List<List<Writable>> originalData = new ArrayList<>();
+
         while(recordReader.hasNext()){
             List<Writable> data = recordReader.next();
             originalData.add(data);
@@ -126,9 +127,9 @@ public class BostonHousePricePrediction {
         List<List<Writable>> transformedData = LocalTransformExecutor.execute(originalData,tp);
 
         //  Printing out the transformed data
-        for (int i = 0; i< transformedData.size();i++){
-            System.out.println(transformedData.get(i));
-        }
+//        for (int i = 0; i< transformedData.size();i++){
+//            System.out.println(transformedData.get(i));
+//        }
 
         //  Preparing to split the dataset into training and test set
         CollectionRecordReader crr = new CollectionRecordReader(transformedData);
@@ -152,6 +153,7 @@ public class BostonHousePricePrediction {
                 .weightInit(WeightInit.XAVIER)
                 .seed(seed)
                 .updater(new Adam(learningRate))
+                .l2(0.001)
                 .list()
                 .layer(0,new DenseLayer.Builder()
                         .nIn(13)
@@ -173,11 +175,11 @@ public class BostonHousePricePrediction {
                         .nOut(16)
                         .activation(Activation.RELU)
                         .build())
-                .layer(0,new OutputLayer.Builder()
+                .layer(4,new OutputLayer.Builder()
                         .nIn(16)
                         .nOut(1)
                         .activation(Activation.IDENTITY)
-                        .lossFunction(LossFunctions.LossFunction.MEAN_ABSOLUTE_ERROR)
+                        .lossFunction(LossFunctions.LossFunction.MSE)
                         .build())
                 .build();
 
